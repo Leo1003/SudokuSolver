@@ -9,7 +9,9 @@ namespace SudokuSolver
 {
     class SudokuPanel : Panel
     {
-        private Label[,] labels = new Label[9, 9];
+    	private int LastSelectx=-1;
+    	private int LastSelecty=-1;
+        private SudoBlock[,] labels = new SudoBlock[9, 9];
         internal SudokuPanel() : base()
         {
             base.Size = new Size(356, 356);
@@ -22,21 +24,53 @@ namespace SudokuSolver
                 }
             }
         }
+        public SudoBlock ActiveBlock()
+        {
+        	return labels[LastSelectx,LastSelecty];
+        }
+        public void UserSelect(int x, int y)
+        {
+        	if (x>8||y>8||x<0||y<0) 
+        	{
+        		return;
+        	}
+        	if(LastSelectx!=-1)
+        	{
+        		labels[LastSelectx,LastSelecty].UnSelect();
+        	}
+        	labels[x,y].UserSelect();
+        	LastSelectx=x;
+        	LastSelecty=y;
+        }
+        public void UnSelect()
+        {
+        	if(LastSelectx!=-1)
+        	{
+        		labels[LastSelectx,LastSelecty].UnSelect();
+        	}
+        	LastSelectx=-1;
+        	LastSelecty=-1;
+        }
         private void CreateLabel(int x, int y)
         {
-            Label label = new Label();
-            label.BackColor = Color.White;
-            label.Font = new Font("微軟正黑體", 24F, FontStyle.Bold, GraphicsUnit.Point, 136);
-            label.Location = new Point(36 * x + (x / 3 + 1) * 3 + (x + 1) * 2, 36 * y + (y / 3 + 1) * 3 + (y + 1) * 2);
-            label.Name = "label";
-            label.Margin = new Padding(0);
-            label.Size = new Size(36, 36);
-            label.TabIndex = 0;
-            label.Text = "";//debug
-            label.TextAlign = ContentAlignment.MiddleCenter;
-            label.UseMnemonic = false;
+            SudoBlock label = new SudoBlock();
+			label.Location = new Point(36 * x + (x / 3 + 1) * 3 + (x + 1) * 2, 36 * y + (y / 3 + 1) * 3 + (y + 1) * 2);
+            label.x=x;
+            label.y=y;
+            label.Click+= new EventHandler(label_Click);
             labels[x, y] = label;
             Controls.Add(label);
+        }
+        private void label_Click(object sender,EventArgs e)
+        {
+        	SudoBlock obj = (SudoBlock)sender;
+        	if(LastSelectx!=-1)
+        	{
+        		labels[LastSelectx,LastSelecty].UnSelect();
+        	}
+        	obj.UserSelect();
+        	LastSelectx=obj.x;
+        	LastSelecty=obj.y;
         }
         public new Size Size
         {
@@ -47,6 +81,20 @@ namespace SudokuSolver
             set
             {
             }
+        }
+        public int x
+        {
+        	get
+        	{
+        		return LastSelectx;
+        	}
+        }
+        public int y
+        {
+        	get
+        	{
+        		return LastSelecty;
+        	}
         }
     }
 }

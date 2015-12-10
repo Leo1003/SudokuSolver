@@ -28,19 +28,17 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.SuspendLayout();
-            // 
-            // FormMain
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.ClientSize = new System.Drawing.Size(340, 318);
-            this.Name = "FormMain";
-            this.Text = "SudokuSolver";
-            this.Load += new System.EventHandler(this.FormMain_Load);
-            this.ResumeLayout(false);
-
+        	this.SuspendLayout();
+        	// 
+        	// FormMain
+        	// 
+        	this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+        	this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+        	this.BackColor = System.Drawing.SystemColors.ControlLightLight;
+        	this.ClientSize = new System.Drawing.Size(356, 356);
+        	this.Name = "FormMain";
+        	this.Text = "SudokuSolver";
+        	this.ResumeLayout(false);
         }
 
         #endregion
