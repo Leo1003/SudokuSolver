@@ -12,6 +12,8 @@ namespace SudokuSolver
     public partial class FormMain : Form
     {
     	SudokuPanel p;
+        LabelButton button2;
+        LabelButton button3;
         public FormMain()
         {
             InitializeComponent();
@@ -19,8 +21,35 @@ namespace SudokuSolver
             p.Location = new Point(0, 0);
             Controls.Add(p);
             KeyDown+= new KeyEventHandler(Form_KeyDown);
+            //PreviewKeyDown+= new PreviewKeyDownEventHandler(Form_KeyDown);
             KeyPress+= new KeyPressEventHandler(Form_KeyPress);
+
+            //button2
+
+            button2 = new LabelButton();
+            button2.Name = "button2";
+            button2.Size = new Size(64, 32);
+            button2.Location = new Point(362, 315);
+            button2.Text = "計算";
+            Controls.Add(button2);
+
+            //button3
+
+            button3 = new LabelButton();
+            button3.Name = "button3";
+            button3.Size = new Size(64, 32);
+            button3.Location = new Point(437, 315);
+            button3.Text = "清除";
+            button3.BorderColor = Color.Red;
+            Controls.Add(button3);
+            button3.Click += Button3_Click;
         }
+
+        private void Button3_Click(object sender, EventArgs e)
+        {
+            p.ClearNumber();
+        }
+
         private void Form_KeyPress(object sender, KeyPressEventArgs e)
         {
         	switch (e.KeyChar) {
@@ -43,6 +72,7 @@ namespace SudokuSolver
         			break;
         	}
         }
+        //private void Form_KeyDown(object sender, PreviewKeyDownEventArgs e)
         private void Form_KeyDown(object sender, KeyEventArgs e)
         {
         	switch (e.KeyCode) {
@@ -69,6 +99,18 @@ namespace SudokuSolver
         			p.UserSelect(p.x,p.y+1);
         			break;
         	}
+            
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            p.ClearNumber();
+            p.Focus();
         }
     }
 }

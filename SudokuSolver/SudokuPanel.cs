@@ -51,6 +51,17 @@ namespace SudokuSolver
         	LastSelectx=-1;
         	LastSelecty=-1;
         }
+        public void ClearNumber()
+        {
+            UnSelect();
+            for (int i = 0; i < 9; i++)
+            {
+                for (int j = 0; j < 9; j++)
+                {
+                    labels[j, i].Text = "";
+                }
+            }
+        }
         private void CreateLabel(int x, int y)
         {
             SudoBlock label = new SudoBlock();

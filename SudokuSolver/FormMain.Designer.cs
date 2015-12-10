@@ -28,20 +28,55 @@
         /// </summary>
         private void InitializeComponent()
         {
-        	this.SuspendLayout();
-        	// 
-        	// FormMain
-        	// 
-        	this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
-        	this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-        	this.BackColor = System.Drawing.SystemColors.ControlLightLight;
-        	this.ClientSize = new System.Drawing.Size(356, 356);
-        	this.Name = "FormMain";
-        	this.Text = "SudokuSolver";
-        	this.ResumeLayout(false);
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.button1 = new System.Windows.Forms.Label();
+            this.SuspendLayout();
+            // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(356, 356);
+            this.panel1.TabIndex = 2;
+            this.panel1.Visible = false;
+            // 
+            // button1
+            // 
+            this.button1.BackColor = System.Drawing.Color.Maroon;
+            this.button1.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.button1.Image = ((System.Drawing.Image)(resources.GetObject("button1.Image")));
+            this.button1.Location = new System.Drawing.Point(437, 315);
+            this.button1.Margin = new System.Windows.Forms.Padding(0);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(64, 32);
+            this.button1.TabIndex = 3;
+            this.button1.Text = "計算56";
+            this.button1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.button1.Visible = false;
+            // 
+            // FormMain
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.ClientSize = new System.Drawing.Size(510, 356);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.panel1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.KeyPreview = true;
+            this.MaximizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(372, 394);
+            this.Name = "FormMain";
+            this.Text = "SudokuSolver";
+            this.ResumeLayout(false);
+
         }
 
         #endregion
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Label button1;
     }
 }
 
