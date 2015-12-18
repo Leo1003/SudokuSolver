@@ -9,14 +9,18 @@ namespace SudokuSolver.SudoCalc
 	public class Candidate
 	{
 		private bool[] nums = new bool[10];
-		public Candidate()
+		public Candidate():this(true)
 		{
+		}
+		public Candidate(bool value)
+		{
+			nums[0]=false;
 			for (int i = 1; i < 10; i++) 
 			{
-				nums[i]=true;
+				nums[i]=value;
 			}
 		}
-		public Candidate(params SudoNum[] num)
+		public Candidate(params SudoNum[] num):this(false)
 		{
 			foreach (SudoNum i in num) 
 			{
@@ -32,6 +36,11 @@ namespace SudokuSolver.SudoCalc
 				if(nums[i])n[s]=(SudoNum)i;
 			}
 			return n;
+		}
+		public bool HasNumber(SudoNum value)
+		{
+			if(value == SudoNum.Unknown)throw new InvalidOperationException();
+			return nums[(int)value];
 		}
 		public void Add(SudoNum n)
 		{

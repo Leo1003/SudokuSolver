@@ -8,7 +8,7 @@ namespace SudokuSolver.SudoCalc
 	/// </summary>
 	public enum SudoNum
 	{
-		Unknown=0;
+		Unknown=0,
 		N1=1,
 		N2=2,
 		N3=3,

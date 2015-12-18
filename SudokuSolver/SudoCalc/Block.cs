@@ -11,6 +11,15 @@ namespace SudokuSolver.SudoCalc
 		private SudoNum num = SudoNum.Unknown;
 		public Block()
 		{
+			Stable=false;
+		}
+		public Block(SudoNum number):this()
+		{
+			Number=number;
+		}
+		public Block(SudoNum number,bool stable):this(number)
+		{
+			Stable=stable;
 		}
 		public SudoNum Number
 		{
@@ -20,8 +29,9 @@ namespace SudokuSolver.SudoCalc
 			}
 			set
 			{
-				if(value<=9&&value>=0)num=(SudoNum)value;
+				if((int)value<=9&&(int)value>=0)num=value;
 				else throw new InvalidOperationException();
+				if((int)value!=0)cand= new Candidate(value);
 			}
 		}
 		public bool Stable
@@ -39,6 +49,7 @@ namespace SudokuSolver.SudoCalc
 			{
 				if(Stable)return;
 				cand=value;
+				if(cand.Count>1)num= SudoNum.Unknown;
 			}
 		}
 	}
