@@ -39,6 +39,21 @@ namespace SudokuSolver.SudoCalc
 				table[x,y]=value;
 			}
 		}
-		
+		public static int GetRegion(int x,int y)
+		{
+			return (y/3)*3+(x/3);
+		}
+		public static int GetRegionNumber(int x,int y)
+		{
+			return (y%3)*3+(x%3);
+		}
+		public static int GetX(int r,int n)
+		{
+			return (r%3)*3+(n%3);
+		}
+		public static int GetY(int r,int n)
+		{
+			return (r/3)*3+(n/3);
+		}
 	}
 }
