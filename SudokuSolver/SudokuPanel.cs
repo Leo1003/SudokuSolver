@@ -26,6 +26,7 @@ namespace SudokuSolver
         }
         public SudoBlock ActiveBlock()
         {
+        	if(LastSelectx==-1)return null;
         	return labels[LastSelectx,LastSelecty];
         }
         public void UserSelect(int x, int y)

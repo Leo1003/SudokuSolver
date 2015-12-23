@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using SudokuSolver.SudoCalc;
 
 namespace SudokuSolver
 {
@@ -32,6 +33,7 @@ namespace SudokuSolver
             button2.Location = new Point(362, 315);
             button2.Text = "計算";
             Controls.Add(button2);
+            button2.Click+= button2_Click;
 
             //button3
 
@@ -109,8 +111,50 @@ namespace SudokuSolver
 
         private void button2_Click(object sender, EventArgs e)
         {
-            p.ClearNumber();
-            p.Focus();
+        	int locx=p.x;
+        	int locy=p.y;
+        	string ds = "";
+        	
+        	for(int y=0;y<9;y++)
+        	{
+        		for (int x = 0; x < 9; x++) {
+        			p.UserSelect(x,y);
+        			switch (p.ActiveBlock().Text) {
+        				case "":
+        					ds+="0";
+        					break;
+        				default:
+        					ds+=p.ActiveBlock().Text;
+        					break;
+        			}
+        		}
+        	}
+        	
+        	ds=ds;//debug
+        	ds="040250008030409170000081200006000720000604000012000300003810000064902010700045090";
+        	SudokuSolver.SudoCalc.Panel data = new SudokuSolver.SudoCalc.Panel(ds);
+        	Calculator.ExpelCandidate(ref data);
+        	Calculator.Filler(ref data);
+        	/*
+        	while (Calculator.Filler(ref data)) {
+        		Calculator.ExpelCandidate(ref data);
+        	}
+        	*/
+        	for(int y=0;y<9;y++)
+        	{
+        		for (int x = 0; x < 9; x++) {
+        			p.UserSelect(x,y);
+        			if(data[x,y].Number== SudoNum.Unknown)
+        			{
+        				p.ActiveBlock().Text="";
+        			}
+        			else
+        			{
+        				p.ActiveBlock().Text=((int)data[x,y].Number).ToString();
+        			}
+        		}
+        	}
+        	p.UserSelect(locx,locy);
         }
     }
 }

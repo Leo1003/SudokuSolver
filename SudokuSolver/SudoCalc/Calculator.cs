@@ -38,23 +38,25 @@ namespace SudokuSolver.SudoCalc
 		{
 			for (int i = 0; i < 9; i++) {
 				if(i==except)continue;
-				pl[(region%3)*3+i%3,(region/3)*3+i/3].CandidateNumber.Remove(value);
+				pl[Panel.GetX(region,i),Panel.GetY(region,i)].CandidateNumber.Remove(value);
 			}
 		}
-		public static void Filler(ref Panel pl)
+		public static bool Filler(ref Panel pl)
 		{
+			bool changed=false;
 			//check blocks
 			for (int y = 0; y < 9; y++) 
 			{
 				for (int x = 0; x < 9; x++) 
 				{
-					if(pl[x,y].Number!= SudoNum.Unknown&&pl[x,y].CandidateNumber.Count==1)
+					if(pl[x,y].Number== SudoNum.Unknown&&pl[x,y].CandidateNumber.Count==1)
 					{
 						SudoNum tmp=pl[x,y].CandidateNumber.GetNumbers()[0];
 						pl[x,y].Number=tmp;
 						RowExpel(ref pl,y,x,tmp);
 						ColumnExpel(ref pl,x,y,tmp);
 						RegionExpel(ref pl,Panel.GetRegion(x,y),Panel.GetRegionNumber(x,y),tmp);
+						changed=true;
 					}
 				}
 			}
@@ -81,11 +83,13 @@ namespace SudokuSolver.SudoCalc
 								pl[Panel.GetX(r,n),Panel.GetY(r,n)].Number= (SudoNum)i;
 								RowExpel(ref pl,Panel.GetY(r,n),Panel.GetX(r,n),(SudoNum)i);
 								ColumnExpel(ref pl,Panel.GetX(r,n),Panel.GetY(r,n),(SudoNum)i);
+								changed=true;
 							}
 						}
 					}
 				}
 			}
+			return changed;
 		}
 	}
 }

@@ -33,7 +33,11 @@ namespace SudokuSolver.SudoCalc
 			int s=0;
 			for (int i = 1; i < 10; i++) 
 			{
-				if(nums[i])n[s]=(SudoNum)i;
+				if(nums[i])
+				{
+					n[s]=(SudoNum)i;
+					s++;
+				}
 			}
 			return n;
 		}

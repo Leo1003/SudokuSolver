@@ -25,6 +25,10 @@ namespace SudokuSolver.SudoCalc
 			for (int i = 0; i < 9; i++) {
 				for (int j = 0; j < 9; j++) {
 					table[j,i]=new Block((SudoNum)((int)initstring[i*9+j])-(int)'0');
+					if((SudoNum)((int)initstring[i*9+j])-(int)'0'!=SudoNum.Unknown)
+					{
+						table[j,i].Stable=true;
+					}
 				}
 			}
 		}
