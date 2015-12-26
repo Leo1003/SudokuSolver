@@ -24,6 +24,10 @@ namespace SudokuSolver
                 }
             }
         }
+        public bool IsEmpty()//TODO:Last
+        {
+        	
+        }
         public SudoBlock ActiveBlock()
         {
         	if(LastSelectx==-1)return null;
@@ -83,6 +87,17 @@ namespace SudokuSolver
         	obj.UserSelect();
         	LastSelectx=obj.x;
         	LastSelecty=obj.y;
+        }
+        public SudoBlock this[int x,int y]
+        {
+        	get
+        	{
+        		return labels[x,y];
+        	}
+        	set
+        	{
+        		labels[x,y]=value;
+        	}
         }
         public new Size Size
         {

@@ -45,10 +45,10 @@
         	// 
         	this.button1.BackColor = System.Drawing.SystemColors.ControlDark;
         	this.button1.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-        	this.button1.Location = new System.Drawing.Point(437, 315);
+        	this.button1.Location = new System.Drawing.Point(370, 9);
         	this.button1.Margin = new System.Windows.Forms.Padding(0);
         	this.button1.Name = "button1";
-        	this.button1.Size = new System.Drawing.Size(64, 32);
+        	this.button1.Size = new System.Drawing.Size(131, 32);
         	this.button1.TabIndex = 3;
         	this.button1.Text = "量尺";
         	this.button1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
