@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace SudokuSolver
 {
-    class LabelButton:Label
+    class LabelButton : Label
     {
         private Color BColor = Color.DodgerBlue;
         private int BWidth = 3;

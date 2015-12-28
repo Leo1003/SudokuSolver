@@ -5,9 +5,9 @@ namespace SudokuSolver.SudoCalc
 	/// <summary>
 	/// Description of Panel.
 	/// </summary>
-	public class Panel
+	public class Panel:ICloneable
 	{
-		Block[,] table = new Block[9,9];
+        Block[,] table = new Block[9,9];
 		public Panel()
 		{
 			for (int i = 0; i < 9; i++) {
@@ -16,7 +16,7 @@ namespace SudokuSolver.SudoCalc
 				}
 			}
 		}
-		public Panel(string initstring)
+        public Panel(string initstring)
 		{
 			while(initstring.Length<81)
 			{
@@ -32,6 +32,10 @@ namespace SudokuSolver.SudoCalc
 				}
 			}
 		}
+        protected Panel(Block[,] data)
+        {
+            table = data;
+        }
 		public Block this[int x,int y]
 		{
 			get
@@ -40,7 +44,7 @@ namespace SudokuSolver.SudoCalc
 			}
 			set
 			{
-				table[x,y]=value;
+				table[x,y] = value;
 			}
 		}
 		public static int GetRegion(int x,int y)
@@ -59,5 +63,12 @@ namespace SudokuSolver.SudoCalc
 		{
 			return (r/3)*3+(n/3);
 		}
-	}
+
+        public object Clone()
+        {
+            Block[,] tmp = new Block[9, 9];
+            Array.Copy(table, tmp, table.Length);
+            return new Panel(tmp);
+        }
+    }
 }

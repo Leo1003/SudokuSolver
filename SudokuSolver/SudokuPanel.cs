@@ -9,8 +9,8 @@ namespace SudokuSolver
 {
     class SudokuPanel : Panel
     {
-    	private int LastSelectx=-1;
-    	private int LastSelecty=-1;
+        private int LastSelectx = -1;
+        private int LastSelecty = -1;
         private SudoBlock[,] labels = new SudoBlock[9, 9];
         internal SudokuPanel() : base()
         {
@@ -24,37 +24,44 @@ namespace SudokuSolver
                 }
             }
         }
-        public bool IsEmpty()//TODO:Last
+        public bool IsEmpty()
         {
-        	
+            foreach (SudoBlock item in labels)
+            {
+                if (item.Text != "")
+                {
+                    return false;
+                }
+            }
+            return true;
         }
         public SudoBlock ActiveBlock()
         {
-        	if(LastSelectx==-1)return null;
-        	return labels[LastSelectx,LastSelecty];
+            if (LastSelectx == -1) return null;
+            return labels[LastSelectx, LastSelecty];
         }
         public void UserSelect(int x, int y)
         {
-        	if (x>8||y>8||x<0||y<0) 
-        	{
-        		return;
-        	}
-        	if(LastSelectx!=-1)
-        	{
-        		labels[LastSelectx,LastSelecty].UnSelect();
-        	}
-        	labels[x,y].UserSelect();
-        	LastSelectx=x;
-        	LastSelecty=y;
+            if (x > 8 || y > 8 || x < 0 || y < 0)
+            {
+                return;
+            }
+            if (LastSelectx != -1)
+            {
+                labels[LastSelectx, LastSelecty].UnSelect();
+            }
+            labels[x, y].UserSelect();
+            LastSelectx = x;
+            LastSelecty = y;
         }
         public void UnSelect()
         {
-        	if(LastSelectx!=-1)
-        	{
-        		labels[LastSelectx,LastSelecty].UnSelect();
-        	}
-        	LastSelectx=-1;
-        	LastSelecty=-1;
+            if (LastSelectx != -1)
+            {
+                labels[LastSelectx, LastSelecty].UnSelect();
+            }
+            LastSelectx = -1;
+            LastSelecty = -1;
         }
         public void ClearNumber()
         {
@@ -70,34 +77,34 @@ namespace SudokuSolver
         private void CreateLabel(int x, int y)
         {
             SudoBlock label = new SudoBlock();
-			label.Location = new Point(36 * x + (x / 3 + 1) * 3 + (x + 1) * 2, 36 * y + (y / 3 + 1) * 3 + (y + 1) * 2);
-            label.x=x;
-            label.y=y;
-            label.Click+= new EventHandler(label_Click);
+            label.Location = new Point(36 * x + (x / 3 + 1) * 3 + (x + 1) * 2, 36 * y + (y / 3 + 1) * 3 + (y + 1) * 2);
+            label.x = x;
+            label.y = y;
+            label.Click += new EventHandler(label_Click);
             labels[x, y] = label;
             Controls.Add(label);
         }
-        private void label_Click(object sender,EventArgs e)
+        private void label_Click(object sender, EventArgs e)
         {
-        	SudoBlock obj = (SudoBlock)sender;
-        	if(LastSelectx!=-1)
-        	{
-        		labels[LastSelectx,LastSelecty].UnSelect();
-        	}
-        	obj.UserSelect();
-        	LastSelectx=obj.x;
-        	LastSelecty=obj.y;
+            SudoBlock obj = (SudoBlock)sender;
+            if (LastSelectx != -1)
+            {
+                labels[LastSelectx, LastSelecty].UnSelect();
+            }
+            obj.UserSelect();
+            LastSelectx = obj.x;
+            LastSelecty = obj.y;
         }
-        public SudoBlock this[int x,int y]
+        public SudoBlock this[int x, int y]
         {
-        	get
-        	{
-        		return labels[x,y];
-        	}
-        	set
-        	{
-        		labels[x,y]=value;
-        	}
+            get
+            {
+                return labels[x, y];
+            }
+            set
+            {
+                labels[x, y] = value;
+            }
         }
         public new Size Size
         {
@@ -111,17 +118,17 @@ namespace SudokuSolver
         }
         public int x
         {
-        	get
-        	{
-        		return LastSelectx;
-        	}
+            get
+            {
+                return LastSelectx;
+            }
         }
         public int y
         {
-        	get
-        	{
-        		return LastSelecty;
-        	}
+            get
+            {
+                return LastSelecty;
+            }
         }
     }
 }
