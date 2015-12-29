@@ -62,5 +62,4 @@ namespace SudokuSolver.SudoCalc
             return new Block(num, Stable, (Candidate)cand.Clone());
         }
     }
-
 }

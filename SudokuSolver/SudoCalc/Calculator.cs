@@ -21,6 +21,17 @@ namespace SudokuSolver.SudoCalc
                 }
             }
         }
+        public static void FullExpel(ref Panel pl)
+        {
+        	foreach (Block item in pl) 
+        	{
+        		if(item.Number == SudoNum.Unknown)
+        		{
+        			item.CandidateNumber=new Candidate();
+        		}
+        	}
+        	ExpelCandidate(ref pl);
+        }
         public static void RowExpel(ref Panel pl, int row, int except, SudoNum value)
         {
             for (int i = 0; i < 9; i++)
@@ -98,7 +109,7 @@ namespace SudokuSolver.SudoCalc
             }
             return changed;
         }
-        public static Panel[] FindAnswer(Panel pl)
+        public static Panel[] FindAnswer(Panel pl)//TODO:HasSomeProb
         {
             Panel p = (Panel)pl.Clone();
             List<Panel> ls = new List<Panel>();
@@ -111,6 +122,11 @@ namespace SudokuSolver.SudoCalc
                         foreach (SudoNum item in pl[x, y].CandidateNumber.GetNumbers())
                         {
                             p[x, y].Number = item;
+                            FullExpel(ref p);
+                            if (p.IsFull())
+                            {
+                            	ls.Add(p);
+                            }
                             //TODO:AddSomeThing
                             FindAnswer(p);
                         }

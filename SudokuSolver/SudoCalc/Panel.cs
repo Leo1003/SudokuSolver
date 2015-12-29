@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections;
 
 namespace SudokuSolver.SudoCalc
 {
 	/// <summary>
 	/// Description of Panel.
 	/// </summary>
-	public class Panel:ICloneable
+	public class Panel:ICloneable,IEnumerable
 	{
         Block[,] table = new Block[9,9];
 		public Panel()
@@ -47,6 +48,14 @@ namespace SudokuSolver.SudoCalc
 				table[x,y] = value;
 			}
 		}
+		public bool IsFull()
+		{
+			foreach (Block item in table) 
+			{
+				if(item.Number == SudoNum.Unknown)return false;
+			}
+			return true;
+		}
 		public static int GetRegion(int x,int y)
 		{
 			return (y/3)*3+(x/3);
@@ -70,5 +79,49 @@ namespace SudokuSolver.SudoCalc
             Array.Copy(table, tmp, table.Length);
             return new Panel(tmp);
         }
+		
+		public IEnumerator GetEnumerator()
+		{
+			return new SudoEnumerator(table);
+		}
     }
+	class SudoEnumerator:IEnumerator
+	{
+		int posx=-1;
+		int posy=0;
+		Block[,] d;
+		internal SudoEnumerator(Block[,] data)
+		{
+			d = data;
+		}
+		
+		public object Current 
+		{
+			get 
+			{
+				return d[posx,posy];
+			}
+		}
+		
+		public bool MoveNext()
+		{
+			posx++;
+			if(posx>=9)
+			{
+				posx-=9;
+				posy++;
+				if(posy>=9)
+				{
+					return false;
+				}
+			}
+			return true;
+		}
+		
+		public void Reset()
+		{
+			posx=-1;
+			posy=0;
+		}
+	}
 }

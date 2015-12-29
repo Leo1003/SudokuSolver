@@ -133,6 +133,7 @@ namespace SudokuSolver
         private string GetOneLine()
         {
             string str = "";
+            if(p.IsEmpty())return "";
             for (int y = 0; y < 9; y++)
             {
                 for (int x = 0; x < 9; x++)
@@ -191,6 +192,14 @@ namespace SudokuSolver
             {
                 Calculator.ExpelCandidate(ref data);
             }
+            
+            if(!data.IsFull())
+            {
+            	SudokuSolver.SudoCalc.Panel[] debug = Calculator.FindAnswer(data);
+            	//data = Calculator.FindAnswer(data)[0];//TODO:FixMultiAns
+            	data = debug[0];
+            }
+            
             for (int y = 0; y < 9; y++)
             {
                 for (int x = 0; x < 9; x++)
@@ -221,8 +230,8 @@ namespace SudokuSolver
             label.Text = promptText;
             textBox.Text = value;
 
-            buttonOk.Text = "OK";
-            buttonCancel.Text = "Cancel";
+            buttonOk.Text = "確定";
+            buttonCancel.Text = "取消";
             buttonOk.DialogResult = DialogResult.OK;
             buttonCancel.DialogResult = DialogResult.Cancel;
 
