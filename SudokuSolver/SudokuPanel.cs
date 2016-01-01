@@ -36,41 +36,52 @@ namespace SudokuSolver
             }
             return true;
         }
+        public bool IsFull()
+        {
+            foreach (SudoBlock item in labels)
+            {
+                if (item.Text == "")
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
         public SudoBlock ActiveBlock
         {
-        	get
-        	{
-        		if (LastSelectx == -1) return null;
-            	return labels[LastSelectx, LastSelecty];
-        	}
+            get
+            {
+                if (LastSelectx == -1) return null;
+                return labels[LastSelectx, LastSelecty];
+            }
             set
             {
-            	if (LastSelectx == -1) return;
-            	if (Lock) return;
-            	labels[LastSelectx, LastSelecty] = value;
+                if (LastSelectx == -1) return;
+                if (Lock) return;
+                labels[LastSelectx, LastSelecty] = value;
             }
         }
         public bool Next()
         {
-        	if (LastSelectx==-1) 
-        	{
-        		UserSelect(0,0);
-        	}
-        	else if(LastSelectx == 8 && LastSelecty == 8)
-        	{
-        		return false;
-        	}
-        	else
-        	{
-        		UserSelect((LastSelectx + 1) % 9, LastSelecty + (LastSelectx + 1) / 9);
-        	}
-        	return true;
+            if (LastSelectx == -1)
+            {
+                UserSelect(0, 0);
+            }
+            else if (LastSelectx == 8 && LastSelecty == 8)
+            {
+                return false;
+            }
+            else
+            {
+                UserSelect((LastSelectx + 1) % 9, LastSelecty + (LastSelectx + 1) / 9);
+            }
+            return true;
         }
         public void UserSelect(int x, int y)
         {
             if (x > 8 || y > 8 || x < 0 || y < 0)
             {
-            	return;
+                return;
             }
             if (LastSelectx != -1)
             {
@@ -96,7 +107,7 @@ namespace SudokuSolver
             {
                 for (int j = 0; j < 9; j++)
                 {
-                    Lock = false;                	
+                    Lock = false;
                     labels[j, i].Text = "";
                     labels[j, i].ForeColor = Color.Black;
                 }
@@ -132,7 +143,7 @@ namespace SudokuSolver
             }
             set
             {
-            	if (Lock) return;
+                if (Lock) return;
                 labels[x, y] = value;
             }
         }
@@ -162,21 +173,21 @@ namespace SudokuSolver
         }
         public bool Lock
         {
-        	get
-        	{
-        		return _lock;
-        	}
-        	set
-        	{
-        		for (int i = 0; i < 9; i++)
-	            {
-	                for (int j = 0; j < 9; j++)
-	                {
-	                	labels[j,i].Lock = value;
-	                }
-	            }
-        		_lock = value;
-        	}
+            get
+            {
+                return _lock;
+            }
+            set
+            {
+                for (int i = 0; i < 9; i++)
+                {
+                    for (int j = 0; j < 9; j++)
+                    {
+                        labels[j, i].Lock = value;
+                    }
+                }
+                _lock = value;
+            }
         }
     }
 }

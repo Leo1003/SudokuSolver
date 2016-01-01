@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SudokuSolver.SudoCalc
 {
-    public class Candidate:ICloneable
+    public class Candidate : ICloneable
     {
         private bool[] nums = new bool[10];
         public Candidate() : this(true)

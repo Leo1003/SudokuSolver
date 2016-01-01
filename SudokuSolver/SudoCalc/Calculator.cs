@@ -5,6 +5,7 @@ namespace SudokuSolver.SudoCalc
 {
     public static class Calculator
     {
+        public static bool CancelRequest = false;
         public static void ExpelCandidate(ref Panel pl)
         {
             for (int y = 0; y < 9; y++)
@@ -20,24 +21,24 @@ namespace SudokuSolver.SudoCalc
         }
         public static double O(Panel pl)
         {
-        	double ans = 1d;
-        	if(pl.IsFull())return 0d;
-        	foreach (Block item in pl) 
-        	{
-        		ans *= item.CandidateNumber.Count;
-        	}
-        	return ans;
+            double ans = 1d;
+            if (pl.IsFull()) return 0d;
+            foreach (Block item in pl)
+            {
+                ans *= item.CandidateNumber.Count;
+            }
+            return ans;
         }
         public static void FullExpel(ref Panel pl)
         {
-        	foreach (Block item in pl) 
-        	{
-        		if(item.Number == SudoNum.Unknown)
-        		{
-        			item.CandidateNumber=new Candidate();
-        		}
-        	}
-        	ExpelCandidate(ref pl);
+            foreach (Block item in pl)
+            {
+                if (item.Number == SudoNum.Unknown)
+                {
+                    item.CandidateNumber = new Candidate();
+                }
+            }
+            ExpelCandidate(ref pl);
         }
         public static void RowExpel(ref Panel pl, int row, int except, SudoNum value)
         {
@@ -117,7 +118,7 @@ namespace SudokuSolver.SudoCalc
             return changed;
         }
         public static Panel[] FindAnswer(Panel pl)
-         {
+        {
             Panel p = (Panel)pl.Clone();
             List<Panel> ls = new List<Panel>();
             for (int y = 0; y < 9; y++)
@@ -128,15 +129,20 @@ namespace SudokuSolver.SudoCalc
                     {
                         foreach (SudoNum item in pl[x, y].CandidateNumber.GetNumbers())
                         {
+                            if (CancelRequest)
+                            {
+                                return ls.ToArray();
+                            }
                             p[x, y].Number = item;
                             FullExpel(ref p);
                             if (p.IsFull())
                             {
-                            	ls.Add(p);
+                                ls.Add(p);
                             }
-                            foreach (Panel ele in FindAnswer(p)) {
-                            	ls.Add(ele);
-                            } 
+                            foreach (Panel ele in FindAnswer(p))
+                            {
+                                ls.Add(ele);
+                            }
                         }
                         return ls.ToArray();
                     }

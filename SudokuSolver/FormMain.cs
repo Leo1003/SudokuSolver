@@ -17,6 +17,8 @@ namespace SudokuSolver
         LabelButton buttonCalc;
         LabelButton buttonClr;
         LabelButton buttonLine;
+        Form prog;
+        SudoCalc.Panel data = new SudoCalc.Panel();
         public FormMain()
         {
             InitializeComponent();
@@ -58,22 +60,24 @@ namespace SudokuSolver
             buttonLine.BorderColor = Color.Yellow;
             Controls.Add(buttonLine);
             buttonLine.Click += new EventHandler(buttonLine_Click);
+
+            prog = new Progress();
         }
 
         private void buttonLine_Click(object sender, EventArgs e)
         {
             string tmp = GetOneLine();
-           retry:
+            retry:
             if (InputBox("輸入單行格式", "輸入單行格式文字", ref tmp, p.Lock) == DialogResult.OK)
             {
-                try 
+                try
                 {
-                	FillBack(tmp);
-                } 
-                catch (ArgumentException) 
+                    FillBack(tmp);
+                }
+                catch (ArgumentException)
                 {
-                	MessageBox.Show("請輸入0~9的數字","格式錯誤",MessageBoxButtons.OK,MessageBoxIcon.Exclamation);
-                	goto retry;
+                    MessageBox.Show("請輸入0~9的數字", "格式錯誤", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    goto retry;
                 }
             }
         }
@@ -140,18 +144,18 @@ namespace SudokuSolver
         private string GetOneLine()
         {
             string str = "";
-            if(p.IsEmpty())return "";
+            if (p.IsEmpty()) return "";
             for (int y = 0; y < 9; y++)
             {
                 for (int x = 0; x < 9; x++)
                 {
-                    switch (p[x,y].Text)
+                    switch (p[x, y].Text)
                     {
                         case "":
                             str += "0";
                             break;
                         default:
-                            str += p[x,y].Text;
+                            str += p[x, y].Text;
                             break;
                     }
                 }
@@ -161,21 +165,21 @@ namespace SudokuSolver
 
         private void FillBack(string str)
         {
-        	foreach (char c in str) //check
-        	{
-        		if ((int)(c - '0') > 9 || (int)(c - '0') < 0)
+            foreach (char c in str) //check
+            {
+                if ((int)(c - '0') > 9 || (int)(c - '0') < 0)
                 {
                     throw new ArgumentException();
                 }
-        	}
+            }
             for (int y = 0; y < 9; y++)
             {
                 for (int x = 0; x < 9; x++)
                 {
-                	if (str.Length <= y * 9 + x) 
-                	{
-                		return;
-                	}
+                    if (str.Length <= y * 9 + x)
+                    {
+                        return;
+                    }
                     if (str[y * 9 + x] == '0')
                     {
                         p[x, y].Text = "";
@@ -190,44 +194,66 @@ namespace SudokuSolver
 
         private void buttonCalc_Click(object sender, EventArgs e)
         {
-        	Calc();//TODO:BackgroundWorker
+            try
+            {
+                if (p.IsFull()) return;
+                if (backgroundWorker1.IsBusy)
+                {
+                    backgroundWorker1.CancelAsync();
+                    Calculator.CancelRequest = true;
+                    return;
+                }
+                if (prog.IsDisposed) prog = new Progress();
+                if (prog.Disposing) return;
+                backgroundWorker1.RunWorkerAsync();
+                prog.DialogResult = DialogResult.None;
+                if (prog.ShowDialog() == DialogResult.Cancel)
+                {
+                    backgroundWorker1.CancelAsync();
+                    Calculator.CancelRequest = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                if(ex.Message == "無法將已經強制顯示的表單顯示為強制回應對話方塊。呼叫 showDialog 前請先關閉表單。")
+                {
+                    prog.Close();
+                    backgroundWorker1.CancelAsync();
+                }
+            }
         }
-        
+
         private void Calc()
         {
             string ds = GetOneLine();
-            SudokuSolver.SudoCalc.Panel data = new SudokuSolver.SudoCalc.Panel(ds);
+            data = new SudoCalc.Panel(ds);
             Calculator.ExpelCandidate(ref data);
             //Calculator.Filler(ref data);
             while (Calculator.Filler(ref data))
             {
                 Calculator.ExpelCandidate(ref data);
             }
-            
-            if(!data.IsFull())
+
+            if (!data.IsFull())
             {
-            	SudokuSolver.SudoCalc.Panel[] debug = Calculator.FindAnswer(data);
-            	//data = Calculator.FindAnswer(data)[0];//TODO:FixMultiAns
-            	data = debug[0];
-            }
-            
-            for (int y = 0; y < 9; y++)
-            {
-                for (int x = 0; x < 9; x++)
+                SudoCalc.Panel[] debug = Calculator.FindAnswer(data);
+                if(Calculator.CancelRequest)
                 {
-                    if (data[x, y].Number == SudoNum.Unknown)
-                    {
-                        p[x, y].Text = "";
-                    }
-                    else
-                    {
-                        p[x, y].Text = ((int)data[x, y].Number).ToString();
-                        if(!data[x, y].Stable)p[x, y].ForeColor = Color.Red;
-                        else p[x, y].ForeColor = Color.Black;
-                    }
+                    Calculator.CancelRequest = false;
+                    return;
                 }
+                //data = Calculator.FindAnswer(data)[0];//TODO:FixMultiAns
+                if (debug.Length == 0)
+                {
+                    MessageBox.Show("此題無解", "計算結果", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return;
+                }
+                if (debug.Length > 1)
+                {
+                    MessageBox.Show("此題多解", "計算結果", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                }
+                data = debug[0];
             }
-            p.Lock = true;
         }
 
         //https://www.dotblogs.com.tw/aquarius6913/2014/09/03/146444
@@ -240,6 +266,8 @@ namespace SudokuSolver
             Button buttonCancel = new Button();
 
             form.Text = title;
+            form.ShowInTaskbar = false;
+            form.ShowIcon = false;
             label.Text = promptText;
             textBox.Text = value;
             textBox.ReadOnly = rdonly;
@@ -272,6 +300,34 @@ namespace SudokuSolver
             DialogResult dialogResult = form.ShowDialog();
             value = textBox.Text;
             return dialogResult;
+        }
+
+        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        {
+            Calc();
+        }
+
+        private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (e.Cancelled) return;
+            prog.Close();
+            for (int y = 0; y < 9; y++)
+            {
+                for (int x = 0; x < 9; x++)
+                {
+                    if (data[x, y].Number == SudoNum.Unknown)
+                    {
+                        p[x, y].Text = "";
+                    }
+                    else
+                    {
+                        p[x, y].Text = ((int)data[x, y].Number).ToString();
+                        if (!data[x, y].Stable) p[x, y].ForeColor = Color.Red;
+                        else p[x, y].ForeColor = Color.Black;
+                    }
+                }
+            }
+            p.Lock = true;
         }
     }
 }

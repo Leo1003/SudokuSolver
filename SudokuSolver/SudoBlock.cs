@@ -26,7 +26,7 @@ namespace SudokuSolver
             Text = "";
             TextAlign = ContentAlignment.MiddleCenter;
             UseMnemonic = false;
-            Lock=false;
+            Lock = false;
         }
         public int x
         {
@@ -66,20 +66,20 @@ namespace SudokuSolver
         }
         public bool Lock
         {
-        	get;
-        	set;
+            get;
+            set;
         }
         public new string Text
         {
-        	get
-        	{
-        		return base.Text;
-        	}
-        	set
-        	{
-        		if(Lock)return;
-        		base.Text=value;
-        	}
+            get
+            {
+                return base.Text;
+            }
+            set
+            {
+                if (Lock) return;
+                base.Text = value;
+            }
         }
     }
 }
