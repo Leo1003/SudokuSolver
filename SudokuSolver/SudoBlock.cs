@@ -26,6 +26,7 @@ namespace SudokuSolver
             Text = "";
             TextAlign = ContentAlignment.MiddleCenter;
             UseMnemonic = false;
+            Lock=false;
         }
         public int x
         {
@@ -62,6 +63,23 @@ namespace SudokuSolver
         public void UserSelect()
         {
             Image = selpic;
+        }
+        public bool Lock
+        {
+        	get;
+        	set;
+        }
+        public new string Text
+        {
+        	get
+        	{
+        		return base.Text;
+        	}
+        	set
+        	{
+        		if(Lock)return;
+        		base.Text=value;
+        	}
         }
     }
 }

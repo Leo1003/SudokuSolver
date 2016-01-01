@@ -12,6 +12,7 @@ namespace SudokuSolver
         private int LastSelectx = -1;
         private int LastSelecty = -1;
         private SudoBlock[,] labels = new SudoBlock[9, 9];
+        private bool _lock = false;
         internal SudokuPanel() : base()
         {
             base.Size = new Size(356, 356);
@@ -35,16 +36,41 @@ namespace SudokuSolver
             }
             return true;
         }
-        public SudoBlock ActiveBlock()
+        public SudoBlock ActiveBlock
         {
-            if (LastSelectx == -1) return null;
-            return labels[LastSelectx, LastSelecty];
+        	get
+        	{
+        		if (LastSelectx == -1) return null;
+            	return labels[LastSelectx, LastSelecty];
+        	}
+            set
+            {
+            	if (LastSelectx == -1) return;
+            	if (Lock) return;
+            	labels[LastSelectx, LastSelecty] = value;
+            }
+        }
+        public bool Next()
+        {
+        	if (LastSelectx==-1) 
+        	{
+        		UserSelect(0,0);
+        	}
+        	else if(LastSelectx == 8 && LastSelecty == 8)
+        	{
+        		return false;
+        	}
+        	else
+        	{
+        		UserSelect((LastSelectx + 1) % 9, LastSelecty + (LastSelectx + 1) / 9);
+        	}
+        	return true;
         }
         public void UserSelect(int x, int y)
         {
             if (x > 8 || y > 8 || x < 0 || y < 0)
             {
-                return;
+            	return;
             }
             if (LastSelectx != -1)
             {
@@ -70,7 +96,9 @@ namespace SudokuSolver
             {
                 for (int j = 0; j < 9; j++)
                 {
+                    Lock = false;                	
                     labels[j, i].Text = "";
+                    labels[j, i].ForeColor = Color.Black;
                 }
             }
         }
@@ -81,6 +109,7 @@ namespace SudokuSolver
             label.x = x;
             label.y = y;
             label.Click += new EventHandler(label_Click);
+            label.ForeColor = Color.Black;
             labels[x, y] = label;
             Controls.Add(label);
         }
@@ -103,6 +132,7 @@ namespace SudokuSolver
             }
             set
             {
+            	if (Lock) return;
                 labels[x, y] = value;
             }
         }
@@ -129,6 +159,24 @@ namespace SudokuSolver
             {
                 return LastSelecty;
             }
+        }
+        public bool Lock
+        {
+        	get
+        	{
+        		return _lock;
+        	}
+        	set
+        	{
+        		for (int i = 0; i < 9; i++)
+	            {
+	                for (int j = 0; j < 9; j++)
+	                {
+	                	labels[j,i].Lock = value;
+	                }
+	            }
+        		_lock = value;
+        	}
         }
     }
 }

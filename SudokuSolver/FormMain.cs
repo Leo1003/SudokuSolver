@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Threading;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -13,10 +14,9 @@ namespace SudokuSolver
     public partial class FormMain : Form
     {
         SudokuPanel p;
-        LabelButton button2;
-        LabelButton button3;
-        LabelButton button4;
-        string datastr = "";
+        LabelButton buttonCalc;
+        LabelButton buttonClr;
+        LabelButton buttonLine;
         public FormMain()
         {
             InitializeComponent();
@@ -27,51 +27,58 @@ namespace SudokuSolver
             //PreviewKeyDown+= new PreviewKeyDownEventHandler(Form_KeyDown);
             KeyPress += new KeyPressEventHandler(Form_KeyPress);
 
-            //button2
+            //buttonCalc
 
-            button2 = new LabelButton();
-            button2.Name = "button2";
-            button2.Size = new Size(64, 32);
-            button2.Location = new Point(362, 315);
-            button2.Text = "計算";
-            Controls.Add(button2);
-            button2.Click += button2_Click;
+            buttonCalc = new LabelButton();
+            buttonCalc.Name = "button2";
+            buttonCalc.Size = new Size(64, 32);
+            buttonCalc.Location = new Point(362, 315);
+            buttonCalc.Text = "計算";
+            Controls.Add(buttonCalc);
+            buttonCalc.Click += buttonCalc_Click;
 
-            //button3
+            //buttonClr
 
-            button3 = new LabelButton();
-            button3.Name = "button3";
-            button3.Size = new Size(64, 32);
-            button3.Location = new Point(437, 315);
-            button3.Text = "清除";
-            button3.BorderColor = Color.Red;
-            Controls.Add(button3);
-            button3.Click += Button3_Click;
+            buttonClr = new LabelButton();
+            buttonClr.Name = "button3";
+            buttonClr.Size = new Size(64, 32);
+            buttonClr.Location = new Point(437, 315);
+            buttonClr.Text = "清除";
+            buttonClr.BorderColor = Color.Red;
+            Controls.Add(buttonClr);
+            buttonClr.Click += ButtonClr_Click;
 
-            //button4
+            //buttonLine
 
-            button4 = new LabelButton();
-            button4.Name = "button4";
-            button4.Size = new Size(132, 32);
-            button4.Location = new Point(370, 9);
-            button4.Text = "輸入單行格式";
-            button4.BorderColor = Color.Yellow;
-            Controls.Add(button4);
-            button4.Click += new EventHandler(button4_Click);
+            buttonLine = new LabelButton();
+            buttonLine.Name = "button4";
+            buttonLine.Size = new Size(132, 32);
+            buttonLine.Location = new Point(370, 9);
+            buttonLine.Text = "輸入單行格式";
+            buttonLine.BorderColor = Color.Yellow;
+            Controls.Add(buttonLine);
+            buttonLine.Click += new EventHandler(buttonLine_Click);
         }
 
-        private void button4_Click(object sender, EventArgs e)
+        private void buttonLine_Click(object sender, EventArgs e)
         {
-            datastr = GetOneLine();
-            string tmp = datastr;
-            if (InputBox("輸入單行格式", "輸入單行格式文字", ref tmp) == DialogResult.OK)
+            string tmp = GetOneLine();
+           retry:
+            if (InputBox("輸入單行格式", "輸入單行格式文字", ref tmp, p.Lock) == DialogResult.OK)
             {
-                datastr = tmp;
-                FillBack(datastr);
+                try 
+                {
+                	FillBack(tmp);
+                } 
+                catch (ArgumentException) 
+                {
+                	MessageBox.Show("請輸入0~9的數字","格式錯誤",MessageBoxButtons.OK,MessageBoxIcon.Exclamation);
+                	goto retry;
+                }
             }
         }
 
-        private void Button3_Click(object sender, EventArgs e)
+        private void ButtonClr_Click(object sender, EventArgs e)
         {
             p.ClearNumber();
         }
@@ -82,7 +89,7 @@ namespace SudokuSolver
             {
                 case '0':
                 case ' ':
-                    p.ActiveBlock().Text = "";
+                    p.ActiveBlock.Text = "";
                     break;
                 case '1':
                 case '2':
@@ -93,23 +100,23 @@ namespace SudokuSolver
                 case '7':
                 case '8':
                 case '9':
-                    p.ActiveBlock().Text = e.KeyChar.ToString();
+                    p.ActiveBlock.Text = e.KeyChar.ToString();
                     break;
                 default:
                     break;
             }
         }
-        //private void Form_KeyDown(object sender, PreviewKeyDownEventArgs e)
+
         private void Form_KeyDown(object sender, KeyEventArgs e)
         {
             switch (e.KeyCode)
             {
                 case Keys.Back:
                 case Keys.Delete:
-                    p.ActiveBlock().Text = "";
+                    p.ActiveBlock.Text = "";
                     break;
                 case Keys.Enter:
-                    //TODO:WaitTheSetting
+                    p.Next();
                     break;
                 case Keys.Escape:
                     p.UnSelect();
@@ -138,14 +145,13 @@ namespace SudokuSolver
             {
                 for (int x = 0; x < 9; x++)
                 {
-                    p.UserSelect(x, y);
-                    switch (p.ActiveBlock().Text)
+                    switch (p[x,y].Text)
                     {
                         case "":
                             str += "0";
                             break;
                         default:
-                            str += p.ActiveBlock().Text;
+                            str += p[x,y].Text;
                             break;
                     }
                 }
@@ -155,36 +161,41 @@ namespace SudokuSolver
 
         private void FillBack(string str)
         {
+        	foreach (char c in str) //check
+        	{
+        		if ((int)(c - '0') > 9 || (int)(c - '0') < 0)
+                {
+                    throw new ArgumentException();
+                }
+        	}
             for (int y = 0; y < 9; y++)
             {
                 for (int x = 0; x < 9; x++)
                 {
+                	if (str.Length <= y * 9 + x) 
+                	{
+                		return;
+                	}
                     if (str[y * 9 + x] == '0')
                     {
                         p[x, y].Text = "";
                     }
                     else
                     {
-                        if ((int)(str[y * 9 + x] - '0') > 9 || (int)(str[y * 9 + x] - '0') < 0)
-                        {
-                            throw new ArgumentException();
-                        }
                         p[x, y].Text = str[y * 9 + x].ToString();
                     }
                 }
             }
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void buttonCalc_Click(object sender, EventArgs e)
         {
-            int locx = p.x;
-            int locy = p.y;
-            string ds = datastr;
-            if (ds == "")
-            {
-                ds = GetOneLine();
-            }
-            //ds="040250008030409170000081200006000720000604000012000300003810000064902010700045090";
+        	Calc();//TODO:BackgroundWorker
+        }
+        
+        private void Calc()
+        {
+            string ds = GetOneLine();
             SudokuSolver.SudoCalc.Panel data = new SudokuSolver.SudoCalc.Panel(ds);
             Calculator.ExpelCandidate(ref data);
             //Calculator.Filler(ref data);
@@ -211,14 +222,16 @@ namespace SudokuSolver
                     else
                     {
                         p[x, y].Text = ((int)data[x, y].Number).ToString();
+                        if(!data[x, y].Stable)p[x, y].ForeColor = Color.Red;
+                        else p[x, y].ForeColor = Color.Black;
                     }
                 }
             }
-            p.UserSelect(locx, locy);
+            p.Lock = true;
         }
 
         //https://www.dotblogs.com.tw/aquarius6913/2014/09/03/146444
-        public static DialogResult InputBox(string title, string promptText, ref string value)
+        public static DialogResult InputBox(string title, string promptText, ref string value, bool rdonly = false)
         {
             Form form = new Form();
             Label label = new Label();
@@ -229,6 +242,7 @@ namespace SudokuSolver
             form.Text = title;
             label.Text = promptText;
             textBox.Text = value;
+            textBox.ReadOnly = rdonly;
 
             buttonOk.Text = "確定";
             buttonCancel.Text = "取消";
@@ -236,18 +250,18 @@ namespace SudokuSolver
             buttonCancel.DialogResult = DialogResult.Cancel;
 
             label.SetBounds(9, 20, 372, 13);
-            textBox.SetBounds(12, 36, 372, 20);
-            buttonOk.SetBounds(228, 72, 75, 23);
-            buttonCancel.SetBounds(309, 72, 75, 23);
+            textBox.SetBounds(12, 36, 572, 20);
+            buttonOk.SetBounds(428, 72, 75, 23);
+            buttonCancel.SetBounds(509, 72, 75, 23);
 
             label.AutoSize = true;
             textBox.Anchor = textBox.Anchor | AnchorStyles.Right;
             buttonOk.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             buttonCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
 
-            form.ClientSize = new Size(396, 107);
+            form.ClientSize = new Size(596, 107);
             form.Controls.AddRange(new Control[] { label, textBox, buttonOk, buttonCancel });
-            form.ClientSize = new Size(Math.Max(300, label.Right + 10), form.ClientSize.Height);
+            form.ClientSize = new Size(Math.Max(500, label.Right + 10), form.ClientSize.Height);
             form.FormBorderStyle = FormBorderStyle.FixedDialog;
             form.StartPosition = FormStartPosition.CenterScreen;
             form.MinimizeBox = false;

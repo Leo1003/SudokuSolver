@@ -3,9 +3,6 @@ using System.Collections.Generic;
 
 namespace SudokuSolver.SudoCalc
 {
-    /// <summary>
-    /// Description of Calculator.
-    /// </summary>
     public static class Calculator
     {
         public static void ExpelCandidate(ref Panel pl)
@@ -20,6 +17,16 @@ namespace SudokuSolver.SudoCalc
                     RegionExpel(ref pl, Panel.GetRegion(x, y), Panel.GetRegionNumber(x, y), pl[x, y].Number);
                 }
             }
+        }
+        public static double O(Panel pl)
+        {
+        	double ans = 1d;
+        	if(pl.IsFull())return 0d;
+        	foreach (Block item in pl) 
+        	{
+        		ans *= item.CandidateNumber.Count;
+        	}
+        	return ans;
         }
         public static void FullExpel(ref Panel pl)
         {
@@ -109,8 +116,8 @@ namespace SudokuSolver.SudoCalc
             }
             return changed;
         }
-        public static Panel[] FindAnswer(Panel pl)//TODO:HasSomeProb
-        {
+        public static Panel[] FindAnswer(Panel pl)
+         {
             Panel p = (Panel)pl.Clone();
             List<Panel> ls = new List<Panel>();
             for (int y = 0; y < 9; y++)
@@ -127,9 +134,11 @@ namespace SudokuSolver.SudoCalc
                             {
                             	ls.Add(p);
                             }
-                            //TODO:AddSomeThing
-                            FindAnswer(p);
+                            foreach (Panel ele in FindAnswer(p)) {
+                            	ls.Add(ele);
+                            } 
                         }
+                        return ls.ToArray();
                     }
                 }
             }

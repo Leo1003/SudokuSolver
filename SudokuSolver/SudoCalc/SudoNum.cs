@@ -3,9 +3,6 @@ using System;
 
 namespace SudokuSolver.SudoCalc
 {
-    /// <summary>
-    /// Description of SudoNum.
-    /// </summary>
     public enum SudoNum
     {
         Unknown = 0,

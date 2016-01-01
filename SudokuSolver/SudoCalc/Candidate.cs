@@ -3,9 +3,6 @@ using System.Collections.Generic;
 
 namespace SudokuSolver.SudoCalc
 {
-    /// <summary>
-    /// Description of Candidate.
-    /// </summary>
     public class Candidate:ICloneable
     {
         private bool[] nums = new bool[10];

@@ -3,9 +3,6 @@ using System.Collections;
 
 namespace SudokuSolver.SudoCalc
 {
-	/// <summary>
-	/// Description of Panel.
-	/// </summary>
 	public class Panel:ICloneable,IEnumerable
 	{
         Block[,] table = new Block[9,9];
@@ -76,7 +73,12 @@ namespace SudokuSolver.SudoCalc
         public object Clone()
         {
             Block[,] tmp = new Block[9, 9];
-            Array.Copy(table, tmp, table.Length);
+            //Array.Copy(table, tmp, table.Length);
+            for (int y = 0; y < 9; y++) {
+            	for (int x = 0; x < 9; x++) {
+            		tmp[x,y]=(Block)table[x,y].Clone();
+            	}
+            }
             return new Panel(tmp);
         }
 		

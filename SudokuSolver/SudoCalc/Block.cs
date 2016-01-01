@@ -2,9 +2,6 @@
 
 namespace SudokuSolver.SudoCalc
 {
-    /// <summary>
-    /// Description of Block.
-    /// </summary>
     public class Block : ICloneable
     {
         private Candidate cand = new Candidate();
