@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Threading;
 using System.Drawing;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using SudokuSolver.SudoCalc;
@@ -17,7 +15,7 @@ namespace SudokuSolver
         LabelButton buttonCalc;
         LabelButton buttonClr;
         LabelButton buttonLine;
-        Form prog;
+        Progress prog;
         SudoCalc.Panel data = new SudoCalc.Panel();
         public FormMain()
         {
@@ -196,7 +194,7 @@ namespace SudokuSolver
         {
             try
             {
-                if (p.IsFull()) return;
+                if (p.Lock) return;
                 if (backgroundWorker1.IsBusy)
                 {
                     backgroundWorker1.CancelAsync();
@@ -206,12 +204,32 @@ namespace SudokuSolver
                 if (prog.IsDisposed) prog = new Progress();
                 if (prog.Disposing) return;
                 backgroundWorker1.RunWorkerAsync();
-                prog.DialogResult = DialogResult.None;
-                if (prog.ShowDialog() == DialogResult.Cancel)
+                prog.Canceled = false;
+                prog.ShowDialog();
+                if (prog.Canceled)
                 {
                     backgroundWorker1.CancelAsync();
                     Calculator.CancelRequest = true;
+                    return;
                 }
+
+                for (int y = 0; y < 9; y++)
+                {
+                    for (int x = 0; x < 9; x++)
+                    {
+                        if (data[x, y].Number == SudoNum.Unknown)
+                        {
+                            p[x, y].Text = "";
+                        }
+                        else
+                        {
+                            p[x, y].Text = ((int)data[x, y].Number).ToString();
+                            if (!data[x, y].Stable) p[x, y].ForeColor = Color.Red;
+                            else p[x, y].ForeColor = Color.Black;
+                        }
+                    }
+                }
+                p.Lock = true;
             }
             catch (Exception ex)
             {
@@ -250,7 +268,7 @@ namespace SudokuSolver
                 }
                 if (debug.Length > 1)
                 {
-                    MessageBox.Show("此題多解", "計算結果", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    MessageBox.Show("此題多解，將只會顯示第一解。", "計算結果", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
                 data = debug[0];
             }
@@ -310,24 +328,13 @@ namespace SudokuSolver
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             if (e.Cancelled) return;
-            prog.Close();
-            for (int y = 0; y < 9; y++)
+            try
             {
-                for (int x = 0; x < 9; x++)
-                {
-                    if (data[x, y].Number == SudoNum.Unknown)
-                    {
-                        p[x, y].Text = "";
-                    }
-                    else
-                    {
-                        p[x, y].Text = ((int)data[x, y].Number).ToString();
-                        if (!data[x, y].Stable) p[x, y].ForeColor = Color.Red;
-                        else p[x, y].ForeColor = Color.Black;
-                    }
-                }
+                prog.Close();
             }
-            p.Lock = true;
+            catch (Exception)
+            {
+            }
         }
     }
 }

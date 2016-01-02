@@ -11,9 +11,16 @@ namespace SudokuSolver
 {
     public partial class Progress : Form
     {
+        public bool Canceled = false;
         public Progress()
         {
             InitializeComponent();
+        }
+
+        private void buttonCancel_Click(object sender, EventArgs e)
+        {
+            Canceled = true;
+            Close();
         }
     }
 }

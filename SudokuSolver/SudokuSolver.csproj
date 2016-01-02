@@ -84,9 +84,9 @@
     <Compile Include="SudokuPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <None Include="Test.cs">
+    <Compile Include="Test.cs">
       <SubType>Form</SubType>
-    </None>
+    </Compile>
     <Compile Include="Test.Designer.cs">
       <DependentUpon>Test.cs</DependentUpon>
     </Compile>
@@ -124,7 +124,10 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="PaperTestData.txt" />
+    <None Include="testdata.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
