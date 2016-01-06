@@ -75,7 +75,9 @@
       <DependentUpon>Progress.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SudoBlock.cs" />
+    <Compile Include="SudoBlock.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="SudoCalc\Block.cs" />
     <Compile Include="SudoCalc\Calculator.cs" />
     <Compile Include="SudoCalc\Candidate.cs" />
